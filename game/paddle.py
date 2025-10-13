@@ -10,18 +10,16 @@ class Paddle:
 
     def move(self, dy, screen_height):
         self.y += dy
-        # Keep within bounds
+        # Clamp paddle within screen bounds
         self.y = max(0, min(self.y, screen_height - self.height))
 
     def rect(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
     def auto_track(self, ball, screen_height):
-        """Simple AI that tracks the ball."""
-        target_y = ball.y + ball.height / 2
-        center_y = self.y + self.height / 2
-
-        if target_y < center_y:
-            self.move(-self.speed / 2, screen_height)
-        elif target_y > center_y:
-            self.move(self.speed / 2, screen_height)
+        # Smooth AI tracking behavior
+        if abs((self.y + self.height // 2) - ball.y) > 10:
+            if ball.y < self.y + self.height // 2:
+                self.move(-self.speed, screen_height)
+            elif ball.y > self.y + self.height // 2:
+                self.move(self.speed, screen_height)
